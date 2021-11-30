@@ -1,4 +1,4 @@
-const { EXPORTDECLARATION_TYPES } = require("@babel/types");
+const cryptoHash = require("./crypto-hash");
 const Block = require("./block");
 const { GENESIS_DATA } = require("./config");
 
@@ -52,6 +52,11 @@ describe('Block', () => {
 
         it('sets a `timestamp`', () => {
             expect(mineBlock.timestamp).not.toEqual(undefined);
+        });
+
+        it('creates a SHA-256 `hash` on the proper inputs', () => {
+            expect(mineBlock.hash)
+                .toEqual(cryptoHash(mineBlock.timestamp, lastBlock.hash, data));
         })
     });
 });
