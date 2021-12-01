@@ -35,7 +35,7 @@ class Block {
         do {
             nonce++;
             timestamp = Date.now();
-            difficulty = Block.ajustDifficulty({ originalBlock: lastBlock, timestamp});
+            difficulty = Block.ajustDifficulty({ originalBlock: lastBlock, timestamp });
             hash = cryptoHash(timestamp, lastHash, data, nonce, difficulty);
         } while (hexToBinary(hash).substring(0, difficulty) !== '0'.repeat(difficulty));
 
