@@ -1,7 +1,11 @@
 {
   "name": "cryptochain",
   "version": "1.0.0",
-  "description": "",
+  "description": "blockchain implementation using proof of work",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vinashu/cryptochain.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll"
@@ -11,5 +15,8 @@
   "license": "ISC",
   "devDependencies": {
     "jest": "^27.4.2"
+  },
+  "dependencies": {
+    "hex-to-binary": "^1.0.1"
   }
 }

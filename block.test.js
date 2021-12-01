@@ -1,9 +1,10 @@
-const cryptoHash = require("./crypto-hash");
-const Block = require("./block");
-const { GENESIS_DATA } = require("./config");
+const cryptoHash = require('./crypto-hash');
+const hexToBinary = require('hex-to-binary');
+const Block = require('./block');
+const { MINE_RATE, GENESIS_DATA } = require('./config');
 
 describe('Block', () => {
-    const timestamp = '00000000';
+    const timestamp = 1000;
     const lastHash = 'lastHash';
     const hash = 'hash';
     const data = ['data1', 'data2']; 
@@ -61,9 +62,9 @@ describe('Block', () => {
         });
 
         it('sets a `hash` that matches the difficulty criteria', () => {
-            expect(mineBlock.hash.substring(0, mineBlock.difficulty))
+            expect(hexToBinary(mineBlock.hash).substring(0, mineBlock.difficulty))
                 .toEqual('0'.repeat(mineBlock.difficulty));
-        })
+        });
 
         it('creates a SHA-256 `hash` on the proper inputs', () => {
             expect(mineBlock.hash)
@@ -76,6 +77,34 @@ describe('Block', () => {
                         data
                     )
                 );
-        })
+        });
+
+        it('ajusts the difficulty', () => {
+            const possibleResults = [lastBlock.difficulty+1, lastBlock.difficulty-1];
+
+            expect(possibleResults.includes(mineBlock.difficulty)).toBe(true);
+        });
+    });
+
+    describe('ajustDifficulty()', () => {
+        it('raises the difficulty for a quickly mined block', () => {
+            expect(Block.ajustDifficulty({ 
+                originalBlock: block, 
+                timestamp: block.timestamp + MINE_RATE - 100
+            })).toEqual(block.difficulty + 1);
+        });
+
+        it('lowers the difficulty for a slowly mined block', () => {
+            expect(Block.ajustDifficulty({ 
+                originalBlock: block, 
+                timestamp: block.timestamp + MINE_RATE + 100
+            })).toEqual(block.difficulty - 1);
+        });     
+        
+        it('has a lower limit of 1', () => {
+            block.difficulty = -1;
+
+            expect(Block.ajustDifficulty({ originalBlock: block})).toEqual(1);
+        });
     });
 });
